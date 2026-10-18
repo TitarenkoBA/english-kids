@@ -25,7 +25,7 @@
               }
             ],
             "styles": [
-              "@fontsource/noto-color-emoji/index.css",
+              "twemoji-colr-font/twemoji.css",
               "src/styles.css"
             ]
           },
