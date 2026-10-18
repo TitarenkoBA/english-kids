@@ -25,6 +25,7 @@
               }
             ],
             "styles": [
+              "@fontsource/noto-color-emoji/index.css",
               "src/styles.css"
             ]
           },
@@ -66,6 +67,9 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }

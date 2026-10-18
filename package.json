@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "deploy": "ng deploy --base-href=/english-kids/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -29,6 +30,7 @@
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
+    "@fontsource/noto-color-emoji": "^5.3.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -37,6 +39,7 @@
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "angular-cli-ghpages": "^3.1.2",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",
