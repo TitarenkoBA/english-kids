@@ -246,17 +246,24 @@ export class App {
     this.say('Well done!');
   }
 
+  // Для букв: сначала буква, пауза, потом слово-пример
   sayW(w: Word) {
-    this.say(w.ex ? `${w.en}. ${w.ex}` : w.en);
+    if (!w.ex) return this.say(w.en);
+    const id = this.say(w.en, () => setTimeout(() => id === this.sayId && this.say(w.ex!), 700));
   }
 
-  say(text: string) {
-    if (!('speechSynthesis' in window)) return;
+  private sayId = 0;
+
+  say(text: string, onEnd?: () => void) {
+    const id = ++this.sayId;
+    if (!('speechSynthesis' in window)) return id;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US';
     u.rate = 0.8;
+    if (onEnd) u.onend = onEnd;
     speechSynthesis.speak(u);
+    return id;
   }
 
   buy(i: Item) {
