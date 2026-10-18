@@ -1,0 +1,134 @@
+<div class="min-h-screen bg-gradient-to-b from-sky-200 to-amber-100 font-sans text-slate-800 select-none">
+  <header class="flex items-center justify-between p-4 max-w-3xl mx-auto">
+    <button class="text-2xl font-extrabold text-indigo-600" (click)="home()">🦉 English Kids</button>
+    <div class="bg-white rounded-full px-4 py-1 shadow font-bold">⭐ {{ totalStars() }}</div>
+  </header>
+
+  <main class="max-w-3xl mx-auto p-4">
+    @if (!lesson()) {
+      <div class="bg-white/80 rounded-3xl p-4 mb-6 flex items-center gap-4 shadow">
+        <span class="text-6xl bounce">🦉</span>
+        <p class="text-lg">Привет! Я Совушка. Давай учить английский вместе! Проходи уроки по порядку и собирай звёздочки ⭐</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        @for (l of lessons; track $index; let i = $index) {
+          <button
+            (click)="open(i)"
+            [disabled]="!unlocked(i)"
+            class="rounded-3xl p-4 shadow-lg bg-white hover:scale-105 transition disabled:opacity-50 disabled:hover:scale-100"
+          >
+            <div class="text-5xl">{{ unlocked(i) ? l.icon : '🔒' }}</div>
+            <div class="font-bold mt-2">{{ i + 1 }}. {{ l.title }}</div>
+            <div class="text-xl">
+              @for (s of [1, 2, 3]; track s) {
+                <span [class.grayscale]="(stars()[i] || 0) < s" [class.opacity-30]="(stars()[i] || 0) < s">⭐</span>
+              }
+            </div>
+          </button>
+        }
+      </div>
+    } @else {
+      @let L = lesson()!;
+      <div class="flex items-center gap-3 mb-4">
+        <button class="bg-white rounded-full w-10 h-10 shadow" (click)="home()">✖</button>
+        <h2 class="text-xl font-bold">{{ L.icon }} {{ L.title }}</h2>
+      </div>
+
+      @switch (phase()) {
+        @case ('learn') {
+          @let w = L.words[card()];
+          <p class="text-center mb-2">Запоминаем новые слова: {{ card() + 1 }} / {{ L.words.length }}</p>
+          <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop" (click)="say(w.en)">
+            <div class="text-8xl mb-4">{{ w.e }}</div>
+            <div class="text-4xl font-extrabold text-indigo-600">{{ w.en }}</div>
+            <div class="text-xl text-slate-500 mt-2">{{ w.ru }}</div>
+            <div class="mt-4 text-3xl">🔊</div>
+          </div>
+          <button class="btn mt-6" (click)="nextCard()">{{ card() < L.words.length - 1 ? 'Дальше ➜' : 'Играть! 🎮' }}</button>
+        }
+
+        @case ('quiz') {
+          @let Q = q();
+          <div class="h-4 bg-white rounded-full overflow-hidden mb-4">
+            <div class="h-full bg-green-400 transition-all" [style.width.%]="(qi() / qs().length) * 100"></div>
+          </div>
+          <div class="bg-white rounded-3xl shadow-xl p-6 text-center" [class.shake]="shake()">
+            @switch (Q.kind) {
+              @case ('listen') {
+                <p class="text-lg mb-2">Послушай и выбери картинку</p>
+                <button class="text-6xl" (click)="say(Q.w.en)">🔊</button>
+              }
+              @case ('toRu') {
+                <p class="text-lg mb-2">Что это значит?</p>
+                <button class="text-4xl font-extrabold text-indigo-600" (click)="say(Q.w.en)">{{ Q.w.en }} 🔊</button>
+              }
+              @case ('toEn') {
+                <p class="text-lg mb-2">Как сказать по-английски?</p>
+                <div class="text-6xl">{{ Q.w.e }}</div>
+                <div class="text-2xl font-bold">{{ Q.w.ru }}</div>
+              }
+              @case ('build') {
+                <p class="text-lg mb-2">Собери {{ Q.pieces.length > 1 && Q.w.en.includes(' ') ? 'фразу' : 'слово' }}</p>
+                <div class="text-6xl">{{ Q.w.e }}</div>
+                <div class="text-xl">{{ Q.w.ru }} <button (click)="say(Q.w.en)">🔊</button></div>
+              }
+            }
+          </div>
+
+          @if (Q.kind === 'build') {
+            <div class="min-h-16 my-4 bg-white/70 rounded-2xl p-3 flex flex-wrap justify-center gap-2" [class.ring-4]="right()" [class.ring-green-400]="right()">
+              @for (i of built(); track $index; let k = $index) {
+                <button class="piece bg-indigo-500 text-white" (click)="unbuild(k)">{{ Q.pieces[i] }}</button>
+              }
+            </div>
+            <div class="flex flex-wrap justify-center gap-2">
+              @for (p of Q.pieces; track $index; let i = $index) {
+                <button class="piece bg-white" [class.invisible]="built().includes(i)" (click)="tapPiece(i)">{{ p }}</button>
+              }
+            </div>
+          } @else {
+            <div class="grid grid-cols-2 gap-4 mt-4">
+              @for (o of Q.opts; track o.en) {
+                <button
+                  (click)="pick(o)"
+                  class="rounded-2xl p-4 shadow-lg bg-white text-2xl font-bold transition hover:scale-105"
+                  [class.bg-red-200]="wrong().includes(o.en)"
+                  [class.opacity-50]="wrong().includes(o.en)"
+                  [class.bg-green-300]="right() && o === Q.w"
+                >
+                  @switch (Q.kind) {
+                    @case ('listen') { <span class="text-6xl">{{ o.e }}</span> }
+                    @case ('toRu') { {{ o.e }} {{ o.ru }} }
+                    @default { {{ o.en }} }
+                  }
+                </button>
+              }
+            </div>
+          }
+          @if (praise()) {
+            <div class="text-center text-3xl font-extrabold text-green-600 mt-4 pop">🎉 {{ praise() }}</div>
+          }
+        }
+
+        @case ('done') {
+          <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop">
+            <div class="text-7xl bounce">🏆</div>
+            <h3 class="text-3xl font-extrabold my-4">Урок пройден!</h3>
+            <div class="text-5xl">
+              @for (s of [1, 2, 3]; track s) {
+                <span [class.opacity-20]="earned() < s">⭐</span>
+              }
+            </div>
+            <div class="flex flex-wrap gap-3 justify-center mt-6">
+              <button class="btn bg-amber-400" (click)="open(idx())">Ещё раз 🔁</button>
+              @if (idx() < lessons.length - 1) {
+                <button class="btn" (click)="open(idx() + 1)">Следующий урок ➜</button>
+              }
+              <button class="btn bg-sky-500" (click)="home()">К урокам 🏠</button>
+            </div>
+          </div>
+        }
+      }
+    }
+  </main>
+</div>
