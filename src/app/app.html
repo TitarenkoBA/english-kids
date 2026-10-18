@@ -1,134 +1,282 @@
 <div class="min-h-screen bg-gradient-to-b from-sky-200 to-amber-100 font-sans text-slate-800 select-none">
-  <header class="flex items-center justify-between p-4 max-w-3xl mx-auto">
-    <button class="text-2xl font-extrabold text-indigo-600" (click)="home()">🦉 English Kids</button>
-    <div class="bg-white rounded-full px-4 py-1 shadow font-bold">⭐ {{ totalStars() }}</div>
-  </header>
-
-  <main class="max-w-3xl mx-auto p-4">
-    @if (!lesson()) {
-      <div class="bg-white/80 rounded-3xl p-4 mb-6 flex items-center gap-4 shadow">
-        <span class="text-6xl bounce">🦉</span>
-        <p class="text-lg">Привет! Я Совушка. Давай учить английский вместе! Проходи уроки по порядку и собирай звёздочки ⭐</p>
+  @if (!h()) {
+    <!-- Создание героя -->
+    <main class="max-w-xl mx-auto p-4 text-center">
+      <h1 class="text-3xl font-extrabold text-indigo-600 my-6">English Kids</h1>
+      <div class="bg-white rounded-3xl shadow-xl p-6">
+        <div class="text-8xl bounce">{{ newAv() }}</div>
+        <h2 class="text-2xl font-bold my-4">Создай своего героя!</h2>
+        <div class="grid grid-cols-5 gap-2 mb-4">
+          @for (a of avatars; track a) {
+            <button class="text-4xl rounded-2xl p-2 transition" [class.bg-indigo-200]="newAv() === a" [class.scale-110]="newAv() === a" (click)="newAv.set(a)">{{ a }}</button>
+          }
+        </div>
+        <input
+          class="w-full border-2 border-indigo-300 rounded-2xl p-3 text-xl text-center mb-4"
+          placeholder="Имя героя"
+          maxlength="16"
+          [value]="newName()"
+          (input)="newName.set($any($event.target).value)"
+        />
+        <button class="btn" (click)="createHero()">Дальше ➜</button>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        @for (l of lessons; track $index; let i = $index) {
-          <button
-            (click)="open(i)"
-            [disabled]="!unlocked(i)"
-            class="rounded-3xl p-4 shadow-lg bg-white hover:scale-105 transition disabled:opacity-50 disabled:hover:scale-100"
-          >
-            <div class="text-5xl">{{ unlocked(i) ? l.icon : '🔒' }}</div>
-            <div class="font-bold mt-2">{{ i + 1 }}. {{ l.title }}</div>
-            <div class="text-xl">
-              @for (s of [1, 2, 3]; track s) {
-                <span [class.grayscale]="(stars()[i] || 0) < s" [class.opacity-30]="(stars()[i] || 0) < s">⭐</span>
+    </main>
+  } @else {
+    @let H = h()!;
+    <header class="flex items-center justify-between gap-2 p-3 max-w-3xl mx-auto">
+      <button class="text-xl sm:text-2xl font-extrabold text-indigo-600" (click)="home()">🏠 English Kids</button>
+      <div class="flex gap-2 font-bold text-sm sm:text-base">
+        <span class="bg-white rounded-full px-3 py-1 shadow">⭐ {{ totalStars() }}</span>
+        <span class="bg-white rounded-full px-3 py-1 shadow">🪙 {{ H.coins }}</span>
+        <button class="bg-white rounded-full px-3 py-1 shadow" (click)="view.set('hero')">
+          {{ H.av }} Ур.{{ H.level }}
+          @if (H.points) { <span class="text-red-500">●</span> }
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto p-4">
+      @switch (view()) {
+        @case ('map') {
+          <div class="bg-white/80 rounded-3xl p-4 mb-4 flex items-center gap-4 shadow cursor-pointer" (click)="view.set('hero')">
+            <div class="text-6xl bounce">{{ H.av }}</div>
+            <div class="flex-1">
+              <div class="font-bold text-lg">{{ H.name }} · уровень {{ H.level }}</div>
+              <div class="h-3 bg-slate-200 rounded-full overflow-hidden my-1">
+                <div class="h-full bg-purple-500" [style.width.%]="(H.xp / hero.need()) * 100"></div>
+              </div>
+              <div class="text-sm text-slate-500">Опыт {{ H.xp }} / {{ hero.need() }} · {{ ownedItems().length ? '' : 'Проходи уроки, получай монеты и покупай предметы!' }}
+                @for (it of ownedItems(); track it.id) { {{ it.e }} }
+              </div>
+            </div>
+          </div>
+          @for (l of lessons; track $index; let i = $index) {
+            @if (l.section) {
+              <h3 class="text-xl font-extrabold mt-6 mb-2">{{ l.section }}</h3>
+            }
+            <button
+              (click)="open(i)"
+              [disabled]="!unlocked(i)"
+              class="inline-flex w-[calc(33.33%-0.5rem)] sm:w-[calc(20%-0.5rem)] m-1 align-top flex-col items-center rounded-2xl p-2 shadow bg-white hover:scale-105 transition disabled:opacity-50 disabled:hover:scale-100"
+              [class.ring-4]="unlocked(i) && !stars()[i]"
+              [class.ring-amber-400]="unlocked(i) && !stars()[i]"
+              [class.bg-amber-50]="l.review"
+            >
+              <div class="text-3xl font-extrabold text-indigo-600 h-10">{{ unlocked(i) ? l.icon : '🔒' }}</div>
+              <div class="text-xs font-bold leading-tight h-8">{{ i + 1 }}. {{ l.title }}</div>
+              <div class="text-sm">
+                @for (s of [1, 2, 3]; track s) {
+                  <span [class.opacity-20]="(stars()[i] || 0) < s">⭐</span>
+                }
+              </div>
+            </button>
+          }
+        }
+
+        @case ('hero') {
+          <div class="bg-white rounded-3xl shadow-xl p-6 text-center">
+            <div class="text-8xl bounce">{{ H.av }}</div>
+            <div class="text-3xl my-2 min-h-10">
+              @for (it of ownedItems(); track it.id) { <span [title]="it.name">{{ it.e }}</span> }
+            </div>
+            <h2 class="text-2xl font-extrabold">{{ H.name }}</h2>
+            <p class="text-slate-500">Уровень {{ H.level }} · Опыт {{ H.xp }} / {{ hero.need() }}</p>
+            <div class="h-3 bg-slate-200 rounded-full overflow-hidden my-2">
+              <div class="h-full bg-purple-500" [style.width.%]="(H.xp / hero.need()) * 100"></div>
+            </div>
+            @if (H.points) {
+              <p class="font-bold text-red-500 my-2">Очки навыков: {{ H.points }} — нажми ➕ чтобы прокачать!</p>
+            }
+            <div class="space-y-2 text-left my-4">
+              @for (s of statList; track s.k) {
+                <div class="flex items-center gap-3 bg-slate-50 rounded-2xl p-3">
+                  <span class="text-3xl">{{ s.e }}</span>
+                  <div class="flex-1">
+                    <div class="font-bold">{{ s.name }}: {{ hero.total(s.k) }}
+                      @if (hero.total(s.k) > H.stats[s.k]) { <span class="text-green-600 text-sm">(+{{ hero.total(s.k) - H.stats[s.k] }} от предметов)</span> }
+                    </div>
+                    <div class="text-xs text-slate-500">{{ s.hint }}</div>
+                  </div>
+                  @if (H.points) {
+                    <button class="piece bg-green-400 text-white" (click)="hero.addStat(s.k)">➕</button>
+                  }
+                </div>
               }
             </div>
-          </button>
-        }
-      </div>
-    } @else {
-      @let L = lesson()!;
-      <div class="flex items-center gap-3 mb-4">
-        <button class="bg-white rounded-full w-10 h-10 shadow" (click)="home()">✖</button>
-        <h2 class="text-xl font-bold">{{ L.icon }} {{ L.title }}</h2>
-      </div>
-
-      @switch (phase()) {
-        @case ('learn') {
-          @let w = L.words[card()];
-          <p class="text-center mb-2">Запоминаем новые слова: {{ card() + 1 }} / {{ L.words.length }}</p>
-          <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop" (click)="say(w.en)">
-            <div class="text-8xl mb-4">{{ w.e }}</div>
-            <div class="text-4xl font-extrabold text-indigo-600">{{ w.en }}</div>
-            <div class="text-xl text-slate-500 mt-2">{{ w.ru }}</div>
-            <div class="mt-4 text-3xl">🔊</div>
+            <div class="flex flex-wrap gap-3 justify-center">
+              <button class="btn bg-amber-400" (click)="view.set('shop')">Магазин 🛒</button>
+              <button class="btn" (click)="home()">К урокам 📚</button>
+            </div>
           </div>
-          <button class="btn mt-6" (click)="nextCard()">{{ card() < L.words.length - 1 ? 'Дальше ➜' : 'Играть! 🎮' }}</button>
         }
 
-        @case ('quiz') {
-          @let Q = q();
-          <div class="h-4 bg-white rounded-full overflow-hidden mb-4">
-            <div class="h-full bg-green-400 transition-all" [style.width.%]="(qi() / qs().length) * 100"></div>
+        @case ('shop') {
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-extrabold">🛒 Магазин</h2>
+            <button class="btn bg-sky-500 !mx-0" (click)="view.set('hero')">{{ H.av }} Герой</button>
           </div>
-          <div class="bg-white rounded-3xl shadow-xl p-6 text-center" [class.shake]="shake()">
-            @switch (Q.kind) {
-              @case ('listen') {
-                <p class="text-lg mb-2">Послушай и выбери картинку</p>
-                <button class="text-6xl" (click)="say(Q.w.en)">🔊</button>
-              }
-              @case ('toRu') {
-                <p class="text-lg mb-2">Что это значит?</p>
-                <button class="text-4xl font-extrabold text-indigo-600" (click)="say(Q.w.en)">{{ Q.w.en }} 🔊</button>
-              }
-              @case ('toEn') {
-                <p class="text-lg mb-2">Как сказать по-английски?</p>
-                <div class="text-6xl">{{ Q.w.e }}</div>
-                <div class="text-2xl font-bold">{{ Q.w.ru }}</div>
-              }
-              @case ('build') {
-                <p class="text-lg mb-2">Собери {{ Q.pieces.length > 1 && Q.w.en.includes(' ') ? 'фразу' : 'слово' }}</p>
-                <div class="text-6xl">{{ Q.w.e }}</div>
-                <div class="text-xl">{{ Q.w.ru }} <button (click)="say(Q.w.en)">🔊</button></div>
-              }
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @for (it of items; track it.id) {
+              @let lv = H.items[it.id] || 0;
+              <div class="bg-white rounded-2xl shadow p-4 flex items-center gap-3" [class.opacity-60]="H.level < it.lvl">
+                <div class="text-5xl">{{ H.level < it.lvl ? '🔒' : it.e }}</div>
+                <div class="flex-1">
+                  <div class="font-bold">{{ it.name }} @if (lv) { <span class="text-purple-600">ур.{{ lv }}</span> }</div>
+                  <div class="text-sm text-slate-500">
+                    {{ statList[it.stat === 'str' ? 0 : it.stat === 'int' ? 1 : 2].e }} +{{ bonus(it) }} за уровень предмета
+                  </div>
+                  @if (H.level < it.lvl) {
+                    <div class="text-sm text-red-500">Нужен уровень героя {{ it.lvl }}</div>
+                  }
+                </div>
+                @if (lv < maxItem) {
+                  <button class="piece text-base text-white" [class.bg-green-500]="hero.canBuy(it)" [class.bg-slate-300]="!hero.canBuy(it)" (click)="buy(it)">
+                    {{ lv ? 'Улучшить' : 'Купить' }}<br />🪙 {{ price(it, lv) }}
+                  </button>
+                } @else {
+                  <span class="font-bold text-amber-500">МАКС</span>
+                }
+              </div>
             }
           </div>
-
-          @if (Q.kind === 'build') {
-            <div class="min-h-16 my-4 bg-white/70 rounded-2xl p-3 flex flex-wrap justify-center gap-2" [class.ring-4]="right()" [class.ring-green-400]="right()">
-              @for (i of built(); track $index; let k = $index) {
-                <button class="piece bg-indigo-500 text-white" (click)="unbuild(k)">{{ Q.pieces[i] }}</button>
-              }
-            </div>
-            <div class="flex flex-wrap justify-center gap-2">
-              @for (p of Q.pieces; track $index; let i = $index) {
-                <button class="piece bg-white" [class.invisible]="built().includes(i)" (click)="tapPiece(i)">{{ p }}</button>
-              }
-            </div>
-          } @else {
-            <div class="grid grid-cols-2 gap-4 mt-4">
-              @for (o of Q.opts; track o.en) {
-                <button
-                  (click)="pick(o)"
-                  class="rounded-2xl p-4 shadow-lg bg-white text-2xl font-bold transition hover:scale-105"
-                  [class.bg-red-200]="wrong().includes(o.en)"
-                  [class.opacity-50]="wrong().includes(o.en)"
-                  [class.bg-green-300]="right() && o === Q.w"
-                >
-                  @switch (Q.kind) {
-                    @case ('listen') { <span class="text-6xl">{{ o.e }}</span> }
-                    @case ('toRu') { {{ o.e }} {{ o.ru }} }
-                    @default { {{ o.en }} }
-                  }
-                </button>
-              }
-            </div>
-          }
-          @if (praise()) {
-            <div class="text-center text-3xl font-extrabold text-green-600 mt-4 pop">🎉 {{ praise() }}</div>
-          }
         }
 
-        @case ('done') {
-          <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop">
-            <div class="text-7xl bounce">🏆</div>
-            <h3 class="text-3xl font-extrabold my-4">Урок пройден!</h3>
-            <div class="text-5xl">
-              @for (s of [1, 2, 3]; track s) {
-                <span [class.opacity-20]="earned() < s">⭐</span>
-              }
-            </div>
-            <div class="flex flex-wrap gap-3 justify-center mt-6">
-              <button class="btn bg-amber-400" (click)="open(idx())">Ещё раз 🔁</button>
-              @if (idx() < lessons.length - 1) {
-                <button class="btn" (click)="open(idx() + 1)">Следующий урок ➜</button>
-              }
-              <button class="btn bg-sky-500" (click)="home()">К урокам 🏠</button>
-            </div>
+        @case ('lesson') {
+          @let L = lesson()!;
+          <div class="flex items-center gap-3 mb-4">
+            <button class="bg-white rounded-full w-10 h-10 shadow" (click)="home()">✖</button>
+            <h2 class="text-xl font-bold">{{ L.icon }} {{ L.title }}</h2>
           </div>
+
+          @switch (phase()) {
+            @case ('learn') {
+              @let w = L.words[card()];
+              <p class="text-center mb-2">Запоминаем: {{ card() + 1 }} / {{ L.words.length }}</p>
+              <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop cursor-pointer" (click)="sayW(w)">
+                @if (L.abc) {
+                  <div class="text-8xl font-extrabold text-indigo-600">{{ w.en }}{{ w.en.toLowerCase() }}</div>
+                  <div class="text-3xl font-bold my-2">читается «{{ w.ru }}»</div>
+                  <div class="text-7xl my-3">{{ w.e }}</div>
+                  <div class="text-3xl font-extrabold text-indigo-600"><span class="text-red-500">{{ w.ex![0] }}</span>{{ w.ex!.slice(1) }}</div>
+                  <div class="text-xl text-slate-500">[{{ w.tr }}]</div>
+                } @else {
+                  <div class="text-8xl mb-4">{{ w.e }}</div>
+                  <div class="text-4xl font-extrabold text-indigo-600">{{ w.en }}</div>
+                  <div class="text-xl text-slate-500 mt-2">{{ w.ru }}</div>
+                }
+                <div class="mt-4 text-3xl">🔊</div>
+              </div>
+              <button class="btn mt-6" (click)="nextCard()">{{ card() < L.words.length - 1 ? 'Дальше ➜' : 'Играть! 🎮' }}</button>
+            }
+
+            @case ('quiz') {
+              @let Q = q();
+              <div class="h-4 bg-white rounded-full overflow-hidden mb-4">
+                <div class="h-full bg-green-400 transition-all" [style.width.%]="(qi() / qs().length) * 100"></div>
+              </div>
+              <div class="flex items-end gap-2 mb-2">
+                <div class="text-5xl" [class.bounce]="right()" [class.shake]="shake()">{{ H.av }}</div>
+                <div class="bg-white rounded-2xl rounded-bl-none px-4 py-2 shadow font-bold">
+                  {{ praise() ? '🎉 ' + praise() : shake() ? 'Ой! Попробуй ещё 🙂' : 'Ты справишься!' }}
+                </div>
+              </div>
+              <div class="bg-white rounded-3xl shadow-xl p-6 text-center" [class.shake]="shake()">
+                @switch (Q.kind) {
+                  @case ('listen') {
+                    <p class="text-lg mb-2">Послушай и выбери {{ L.abc ? 'букву' : 'картинку' }}</p>
+                    <button class="text-6xl" (click)="say(Q.w.en)">🔊</button>
+                  }
+                  @case ('toRu') {
+                    <p class="text-lg mb-2">{{ L.abc ? 'Как читается буква?' : 'Что это значит?' }}</p>
+                    <button class="font-extrabold text-indigo-600" [class.text-7xl]="L.abc" [class.text-4xl]="!L.abc" (click)="say(Q.w.en)">{{ Q.w.en }} 🔊</button>
+                  }
+                  @case ('toEn') {
+                    <p class="text-lg mb-2">{{ L.abc ? 'Какая это буква?' : 'Как сказать по-английски?' }}</p>
+                    <div class="text-6xl">{{ Q.w.e }}</div>
+                    <div class="text-2xl font-bold">{{ L.abc ? '«' + Q.w.ru + '»' : Q.w.ru }}</div>
+                  }
+                  @case ('build') {
+                    <p class="text-lg mb-2">Собери {{ Q.w.en.includes(' ') ? 'фразу' : 'слово' }}</p>
+                    <div class="text-6xl">{{ Q.w.e }}</div>
+                    <div class="text-xl">{{ Q.w.ru }} <button (click)="say(Q.w.en)">🔊</button></div>
+                  }
+                  @case ('speak') {
+                    <p class="text-lg mb-2">Скажи вслух!</p>
+                    <div class="text-6xl">{{ Q.w.e }}</div>
+                    @if (L.abc) {
+                      <div class="text-5xl font-extrabold text-indigo-600">{{ Q.w.en }} — {{ Q.w.ex }}</div>
+                      <div class="text-slate-500">[{{ Q.w.ru }}] — [{{ Q.w.tr }}]</div>
+                    } @else {
+                      <div class="text-3xl font-extrabold text-indigo-600">{{ Q.w.en }}</div>
+                      <div class="text-slate-500">{{ Q.w.ru }}</div>
+                    }
+                    <div class="flex justify-center gap-4 mt-4">
+                      <button class="text-4xl bg-sky-100 rounded-full w-16 h-16" (click)="sayW(Q.w)">🔊</button>
+                      <button class="text-4xl rounded-full w-16 h-16 text-white" [class.bg-red-500]="listening()" [class.pulse]="listening()" [class.bg-green-500]="!listening()" (click)="listen()">🎤</button>
+                    </div>
+                    <p class="mt-2 text-slate-500 min-h-6">{{ listening() ? 'Слушаю…' : heard() ? 'Я услышал: «' + heard() + '»' : 'Нажми 🎤 и скажи: ' + target(Q.w) }}</p>
+                    <button class="underline text-slate-400 mt-2" (click)="skip()">Пропустить ➜</button>
+                  }
+                }
+              </div>
+
+              @if (Q.kind === 'build') {
+                <div class="min-h-16 my-4 bg-white/70 rounded-2xl p-3 flex flex-wrap justify-center gap-2" [class.ring-4]="right()" [class.ring-green-400]="right()">
+                  @for (i of built(); track $index; let k = $index) {
+                    <button class="piece bg-indigo-500 text-white" (click)="unbuild(k)">{{ Q.pieces[i] }}</button>
+                  }
+                </div>
+                <div class="flex flex-wrap justify-center gap-2">
+                  @for (p of Q.pieces; track $index; let i = $index) {
+                    <button class="piece bg-white" [class.invisible]="built().includes(i)" (click)="tapPiece(i)">{{ p }}</button>
+                  }
+                </div>
+              } @else if (Q.kind !== 'speak') {
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                  @for (o of Q.opts; track $index) {
+                    <button
+                      (click)="pick(o)"
+                      class="rounded-2xl p-4 shadow-lg bg-white text-2xl font-bold transition hover:scale-105"
+                      [class.bg-red-200]="wrong().includes(o.en)"
+                      [class.opacity-50]="wrong().includes(o.en)"
+                      [class.bg-green-300]="right() && o === Q.w"
+                    >
+                      @switch (Q.kind) {
+                        @case ('listen') { <span class="text-6xl" [class.font-extrabold]="L.abc">{{ L.abc ? o.en : o.e }}</span> }
+                        @case ('toRu') { {{ L.abc ? '«' + o.ru + '»' : o.e + ' ' + o.ru }} }
+                        @default { <span [class.text-5xl]="L.abc">{{ o.en }}</span> }
+                      }
+                    </button>
+                  }
+                </div>
+              }
+            }
+
+            @case ('done') {
+              <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop">
+                <div class="text-7xl bounce">{{ H.av }}🏆</div>
+                <h3 class="text-3xl font-extrabold my-4">Урок пройден!</h3>
+                <div class="text-5xl">
+                  @for (s of [1, 2, 3]; track s) {
+                    <span [class.opacity-20]="earned() < s">⭐</span>
+                  }
+                </div>
+                <div class="text-xl font-bold mt-4">+{{ result().xp }} опыта · +{{ result().coins }} 🪙</div>
+                @if (result().up) {
+                  <div class="text-2xl font-extrabold text-purple-600 mt-3 pop">🎊 Новый уровень {{ H.level }}! +{{ result().up * 2 }} очка навыков</div>
+                }
+                <div class="flex flex-wrap gap-3 justify-center mt-6">
+                  <button class="btn bg-amber-400" (click)="open(idx())">Ещё раз 🔁</button>
+                  @if (idx() < lessons.length - 1) {
+                    <button class="btn" (click)="open(idx() + 1)">Дальше ➜</button>
+                  }
+                  <button class="btn bg-purple-500" (click)="view.set('hero')">Герой {{ H.av }}</button>
+                </div>
+              </div>
+            }
+          }
         }
       }
-    }
-  </main>
+    </main>
+  }
 </div>
