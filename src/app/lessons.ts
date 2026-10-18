@@ -98,6 +98,10 @@ const C = [
   'Вопросы#❓#Who is it?|кто это?|🕵️;Where do you live?|где ты живёшь?|🏠;How old are you?|сколько тебе лет?|🎂;What color is it?|какого это цвета?|🎨;Why?|почему?|🤔',
   'Поздравления#🎄#Happy birthday!|с днём рождения!|🎂;Happy New Year!|с Новым годом!|🎄;Merry Christmas!|счастливого Рождества!|🎅;Congratulations!|поздравляю!|🎉;Have a nice day!|хорошего дня!|🌞',
   "Друзья#🤗#Let's play together|давай играть вместе|🤗;You are my best friend|ты мой лучший друг|💖;Can I play with you?|можно с тобой поиграть?|🧩;Thank you for the gift|спасибо за подарок|🎁;I miss you|я скучаю по тебе|🥺",
+  'Каникулы#🏖️#I am on holiday|я на каникулах|✈️;We go to the sea|мы едем на море|🌊;I swim in the sea|я плаваю в море|🏊;I build a sandcastle|я строю замок из песка|🏰;I eat ice cream|я ем мороженое|🍦',
+  'Здоровье#🩺#I am sick|я болею|🤒;I have a headache|у меня болит голова|🤕;Wash your hands|мой руки|🧼;Eat vegetables|ешь овощи|🥦;Go to the doctor|иди к врачу|🧑‍⚕️',
+  'Мои вещи#🎒#This is my bag|это мой рюкзак|🎒;This is your pen|это твоя ручка|🖊️;This is his ball|это его мяч|⚽;This is her doll|это её кукла|🪆;Is it your book?|это твоя книга?|📕',
+  'Кем я стану#🌠#I want to be a doctor|я хочу стать врачом|🧑‍⚕️;I want to be a pilot|я хочу стать пилотом|🧑‍✈️;I want to be an artist|я хочу стать художником|🧑‍🎨;I want to be a cook|я хочу стать поваром|🧑‍🍳;I dream about space|я мечтаю о космосе|🚀',
   'Я люблю английский#🏆#I love English|я люблю английский|💖;English is fun|английский — это весело|🎉;I can speak English|я говорю по-английски|🗣️;I learn new words|я учу новые слова|📚;I am a champion|я чемпион|🏆',
 ];
 
@@ -128,7 +132,9 @@ function build(): Lesson[] {
       buf = [];
     }
   }
-  return out.slice(0, 100);
+  const all = out.filter((l) => !l.review && !l.abc).flatMap((l) => l.words);
+  out.push({ title: 'Финальный экзамен', icon: '🎓', words: all, review: true, section: 'Финал 🎓' });
+  return out;
 }
 
 export const LESSONS = build();

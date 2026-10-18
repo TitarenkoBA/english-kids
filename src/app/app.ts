@@ -41,6 +41,7 @@ export class App {
 
   readonly stars = signal<number[]>(loadStars());
   readonly totalStars = computed(() => this.stars().reduce((a, b) => a + (b || 0), 0));
+  readonly doneCount = computed(() => this.stars().filter((s) => s > 0).length);
 
   readonly idx = signal(-1);
   readonly lesson = signal<Lesson | null>(null);

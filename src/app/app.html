@@ -50,6 +50,13 @@
               </div>
             </div>
           </div>
+          <div class="bg-white/80 rounded-2xl px-4 py-2 mb-2 font-bold text-center">
+            @if (stars()[lessons.length - 1]) {
+              🎓 Ура! Весь курс пройден! Можно перепроходить уроки и собирать все ⭐
+            } @else {
+              Пройдено уроков: {{ doneCount() }} из {{ lessons.length }}
+            }
+          </div>
           @for (l of lessons; track $index; let i = $index) {
             @if (l.section) {
               <h3 class="text-xl font-extrabold mt-6 mb-2">{{ l.section }}</h3>
@@ -254,8 +261,17 @@
 
             @case ('done') {
               <div class="bg-white rounded-3xl shadow-xl p-8 text-center pop">
-                <div class="text-7xl bounce">{{ H.av }}🏆</div>
-                <h3 class="text-3xl font-extrabold my-4">Урок пройден!</h3>
+                <div class="text-7xl bounce">{{ H.av }}{{ idx() === lessons.length - 1 ? '🎓' : '🏆' }}</div>
+                @if (idx() === lessons.length - 1) {
+                  <h3 class="text-3xl font-extrabold my-4">Курс пройден! 🎉</h3>
+                  <div class="border-4 border-double border-amber-400 rounded-2xl p-4 my-4">
+                    <div class="text-sm uppercase tracking-widest text-amber-600">Сертификат</div>
+                    <div class="text-2xl font-extrabold">{{ H.name }}</div>
+                    <div>прошёл все {{ lessons.length }} уроков английского!</div>
+                  </div>
+                } @else {
+                  <h3 class="text-3xl font-extrabold my-4">Урок пройден!</h3>
+                }
                 <div class="text-5xl">
                   @for (s of [1, 2, 3]; track s) {
                     <span [class.opacity-20]="earned() < s">⭐</span>
