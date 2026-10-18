@@ -248,8 +248,11 @@ export class App {
 
   // Для букв: сначала буква, пауза, потом слово-пример
   sayW(w: Word) {
-    if (!w.ex) return this.say(w.en);
-    const id = this.say(w.en, () => setTimeout(() => id === this.sayId && this.say(w.ex!), 700));
+    if (!w.ex) {
+      this.say(w.en);
+      return;
+    }
+    const id = this.say(w.en, () => setTimeout(() => id === this.sayId && this.say(w.ex!),));
   }
 
   private sayId = 0;
