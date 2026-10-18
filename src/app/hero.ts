@@ -7,7 +7,7 @@ export interface HeroData {
   stats: Record<Stat, number>; items: Record<string, number>;
 }
 
-export const AVATARS = ['🧙', '🦸', '🧝', '🐲', '🤖', '🦄', '🥷', '🧜', '🐱', '🦊'];
+export const AVATARS = ['🧙', '🦸', '🧝', '🐲', '🤖', '🦄', '🧚', '🧜', '🐱', '🦊'];
 export const STATS: { k: Stat; e: string; name: string; hint: string }[] = [
   { k: 'str', e: '💪', name: 'Сила', hint: '+5% монет за каждое очко' },
   { k: 'int', e: '🧠', name: 'Ум', hint: '+5% опыта за каждое очко' },
@@ -16,7 +16,7 @@ export const STATS: { k: Stat; e: string; name: string; hint: string }[] = [
 export const ITEMS: Item[] = [
   { id: 'sword', e: '🗡️', name: 'Меч', stat: 'str', cost: 20, lvl: 1 },
   { id: 'book', e: '📘', name: 'Книга знаний', stat: 'int', cost: 20, lvl: 1 },
-  { id: 'wand', e: '🪄', name: 'Волшебная палочка', stat: 'mag', cost: 30, lvl: 2 },
+  { id: 'wand', e: '🔮', name: 'Хрустальный шар', stat: 'mag', cost: 30, lvl: 2 },
   { id: 'shield', e: '🛡️', name: 'Щит', stat: 'str', cost: 40, lvl: 3 },
   { id: 'glasses', e: '👓', name: 'Умные очки', stat: 'int', cost: 40, lvl: 3 },
   { id: 'boots', e: '👢', name: 'Сапоги-скороходы', stat: 'str', cost: 60, lvl: 4 },

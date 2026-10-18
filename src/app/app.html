@@ -27,7 +27,7 @@
       <button class="text-xl sm:text-2xl font-extrabold text-indigo-600" (click)="home()">🏠 English Kids</button>
       <div class="flex gap-2 font-bold text-sm sm:text-base">
         <span class="bg-white rounded-full px-3 py-1 shadow">⭐ {{ totalStars() }}</span>
-        <span class="bg-white rounded-full px-3 py-1 shadow">🪙 {{ H.coins }}</span>
+        <span class="bg-white rounded-full px-3 py-1 shadow">💰 {{ H.coins }}</span>
         <button class="bg-white rounded-full px-3 py-1 shadow" (click)="view.set('hero')">
           {{ H.av }} Ур.{{ H.level }}
           @if (H.points) { <span class="text-red-500">●</span> }
@@ -138,7 +138,7 @@
                 </div>
                 @if (lv < maxItem) {
                   <button class="piece text-base text-white" [class.bg-green-500]="hero.canBuy(it)" [class.bg-slate-300]="!hero.canBuy(it)" (click)="buy(it)">
-                    {{ lv ? 'Улучшить' : 'Купить' }}<br />🪙 {{ price(it, lv) }}
+                    {{ lv ? 'Улучшить' : 'Купить' }}<br />💰 {{ price(it, lv) }}
                   </button>
                 } @else {
                   <span class="font-bold text-amber-500">МАКС</span>
@@ -277,7 +277,7 @@
                     <span [class.opacity-20]="earned() < s">⭐</span>
                   }
                 </div>
-                <div class="text-xl font-bold mt-4">+{{ result().xp }} опыта · +{{ result().coins }} 🪙</div>
+                <div class="text-xl font-bold mt-4">+{{ result().xp }} опыта · +{{ result().coins }} 💰</div>
                 @if (result().up) {
                   <div class="text-2xl font-extrabold text-purple-600 mt-3 pop">🎊 Новый уровень {{ H.level }}! +{{ result().up * 2 }} очка навыков</div>
                 }
