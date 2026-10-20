@@ -1,0 +1,79 @@
+{
+  "configVersion": 1,
+  "timestamp": 1792511075092,
+  "index": "/english-kids/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/english-kids/favicon.ico",
+        "/english-kids/icons/icon-192x192.png",
+        "/english-kids/index.html",
+        "/english-kids/main-OMK7DSUU.js",
+        "/english-kids/manifest.webmanifest",
+        "/english-kids/media/twemoji-V4VVCSYM.woff2",
+        "/english-kids/styles-LEDIPEMZ.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/english-kids/icons/icon-128x128.png",
+        "/english-kids/icons/icon-144x144.png",
+        "/english-kids/icons/icon-152x152.png",
+        "/english-kids/icons/icon-384x384.png",
+        "/english-kids/icons/icon-512x512.png",
+        "/english-kids/icons/icon-72x72.png",
+        "/english-kids/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/english-kids/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/english-kids/icons/icon-128x128.png": "1ce82f6876d1d528a7ea45b0605d82fb126ed1f8",
+    "/english-kids/icons/icon-144x144.png": "f4a865cc2023fbcfece60883ec0c3d28730b1b79",
+    "/english-kids/icons/icon-152x152.png": "185cacdbddd28be7ac48b10ef467e38556a3ade1",
+    "/english-kids/icons/icon-192x192.png": "047eb1b86b74909d01ae785d1f515cf64c78a7f1",
+    "/english-kids/icons/icon-384x384.png": "b2f7c8b2e1e2323761de6cdc6015713685f167e4",
+    "/english-kids/icons/icon-512x512.png": "53931949c984bf09eb2697fdd3329f1b6c0e1a6f",
+    "/english-kids/icons/icon-72x72.png": "1aa12a8ab87e27af1c71bd792a7caa035307b9b3",
+    "/english-kids/icons/icon-96x96.png": "b8c865f49128de580bfb900600263f73c2850c35",
+    "/english-kids/index.html": "c2f9368fe7a58328ad270ba96593335c8c66165e",
+    "/english-kids/main-OMK7DSUU.js": "c3da65d2af39ffab2be8433ef9651f815b320efd",
+    "/english-kids/manifest.webmanifest": "edc89010e41083798014b959e588fb4c3fddeff1",
+    "/english-kids/media/twemoji-V4VVCSYM.woff2": "bef118c3a3787f6124a126cb33f6798a2874382f",
+    "/english-kids/styles-LEDIPEMZ.css": "c8810c891f5deff8be0d939921e3a04aeb8a4349"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
