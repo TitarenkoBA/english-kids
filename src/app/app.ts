@@ -6,6 +6,7 @@ type Kind = 'listen' | 'toRu' | 'toEn' | 'build' | 'speak';
 interface Q { kind: Kind; w: Word; opts: Word[]; pieces: string[] }
 
 const KEY = 'ek-progress';
+const PAUSE_MS = 0; // пауза между частями озвучки (буква → пример, слово → перевод)
 const PRAISE = ['Отлично!', 'Супер!', 'Молодец!', 'Great job!', 'Wow!', 'Excellent!'];
 const shuffle = <T>(a: T[]) => [...a].sort(() => Math.random() - 0.5);
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean);
@@ -87,7 +88,7 @@ export class App {
     if (l.review) this.startQuiz();
     else {
       this.phase.set('learn');
-      this.sayW(l.words[0]);
+      this.sayW(l.words[0], true);
     }
   }
 
@@ -100,7 +101,7 @@ export class App {
     const words = this.lesson()!.words;
     if (this.card() < words.length - 1) {
       this.card.update((c) => c + 1);
-      this.sayW(words[this.card()]);
+      this.sayW(words[this.card()], true);
     } else this.startQuiz();
   }
 
@@ -246,24 +247,33 @@ export class App {
     this.say('Well done!');
   }
 
-  // Для букв: сначала буква, пауза, потом слово-пример
-  sayW(w: Word) {
-    if (!w.ex) {
-      this.say(w.en);
-      return;
-    }
-    const id = this.say(w.en, () => setTimeout(() => id === this.sayId && this.say(w.ex!),));
+  // Произносит части по очереди: буква → слово-пример, слово → русский перевод
+  sayW(w: Word, withRu = false) {
+    const parts: [string, string][] = [[w.en, 'en-US']];
+    if (w.ex) parts.push([w.ex, 'en-US']);
+    else if (withRu) parts.push([w.ru, 'ru-RU']);
+    const next = (i: number) => {
+      const id = this.say(parts[i][0], () => setTimeout(() => id === this.sayId && i + 1 < parts.length && next(i + 1), PAUSE_MS), parts[i][1]);
+    };
+    next(0);
+  }
+
+  sayRu(text: string) {
+    this.say(text, undefined, 'ru-RU');
   }
 
   private sayId = 0;
 
-  say(text: string, onEnd?: () => void) {
+  say(text: string, onEnd?: () => void, lang = 'en-US') {
     const id = ++this.sayId;
     if (!('speechSynthesis' in window)) return id;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    u.rate = 0.8;
+    u.lang = lang;
+    // Явно выбираем голос нужного языка, иначе браузер может читать русский английским голосом
+    const voice = speechSynthesis.getVoices().find((v) => v.lang.replace('_', '-').startsWith(lang.slice(0, 2)));
+    if (voice) u.voice = voice;
+    u.rate = lang === 'ru-RU' ? 0.9 : 0.8;
     if (onEnd) u.onend = onEnd;
     speechSynthesis.speak(u);
     return id;

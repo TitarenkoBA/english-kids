@@ -1,6 +1,7 @@
 @layer components {
   .btn { display: block; margin-left: auto; margin-right: auto; padding: 0.75rem 2rem; border-radius: 9999px; background: #22c55e; color: #fff; font-size: 1.25rem; font-weight: 800; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
   .piece { min-width: 3rem; padding: 0.5rem 0.9rem; border-radius: 0.75rem; font-size: 1.75rem; font-weight: 800; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+  .ru-btn { display: inline-block; vertical-align: middle; margin-left: 0.25rem; padding: 0.15rem 0.6rem; border-radius: 9999px; background: #fee2e2; color: #b91c1c; font-size: 0.9rem; font-weight: 700; }
 }
 .btn:active, .piece:active { transform: translateY(3px); }
 .pop { animation: pop .35s ease-out; }
