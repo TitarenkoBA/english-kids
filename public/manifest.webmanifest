@@ -3,6 +3,7 @@
   "short_name": "English Kids",
   "display": "standalone",
   "scope": "./",
+  "id": "/english-kids/",
   "start_url": "./",
   "icons": [
     {
