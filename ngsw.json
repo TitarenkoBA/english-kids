@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1792511075092,
+  "timestamp": 1794575981941,
   "index": "/english-kids/index.html",
   "assetGroups": [
     {
@@ -14,7 +14,7 @@
         "/english-kids/favicon.ico",
         "/english-kids/icons/icon-192x192.png",
         "/english-kids/index.html",
-        "/english-kids/main-OMK7DSUU.js",
+        "/english-kids/main-RIVJFHSH.js",
         "/english-kids/manifest.webmanifest",
         "/english-kids/media/twemoji-V4VVCSYM.woff2",
         "/english-kids/styles-LEDIPEMZ.css"
@@ -51,9 +51,9 @@
     "/english-kids/icons/icon-512x512.png": "53931949c984bf09eb2697fdd3329f1b6c0e1a6f",
     "/english-kids/icons/icon-72x72.png": "1aa12a8ab87e27af1c71bd792a7caa035307b9b3",
     "/english-kids/icons/icon-96x96.png": "b8c865f49128de580bfb900600263f73c2850c35",
-    "/english-kids/index.html": "c2f9368fe7a58328ad270ba96593335c8c66165e",
-    "/english-kids/main-OMK7DSUU.js": "c3da65d2af39ffab2be8433ef9651f815b320efd",
-    "/english-kids/manifest.webmanifest": "edc89010e41083798014b959e588fb4c3fddeff1",
+    "/english-kids/index.html": "380a29d76fec5ce1904ccefdc708f01c3154e2e2",
+    "/english-kids/main-RIVJFHSH.js": "a8325c5ae750a9a46803f8cc8c1360dda59d5038",
+    "/english-kids/manifest.webmanifest": "dba9a9002c3e2ffe1fcee877094c4000119a7deb",
     "/english-kids/media/twemoji-V4VVCSYM.woff2": "bef118c3a3787f6124a126cb33f6798a2874382f",
     "/english-kids/styles-LEDIPEMZ.css": "c8810c891f5deff8be0d939921e3a04aeb8a4349"
   },
